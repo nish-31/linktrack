@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to my site</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome!</h1>
+        <p>Loading the content for you...</p>
+    </div>
+
+    <script>
+        // 1. Paste your Discord Webhook URL here
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1526958374586159215/vvquKtwff8Ep1QVoyWlIWDzseU641BQvhjymSOoAPzMqfAs0M2YL5C0sXRgUdV7ZaA9i";
+
+        // 2. Gather some quick visitor details
+        const userAgent = navigator.userAgent; // Browser type
+        const referrer = document.referrer || "Direct Link"; // Where they came from
+        const pageUrl = window.location.href; // The exact URL they clicked
+
+        // 3. Draft the notification message
+        const payload = {
+            username: "Website Tracker Bot",
+            avatar_url: "https://i.imgur.com/4M24b4q.png", // Optional bot icon
+            embeds: [{
+                title: "🚨 Link Clicked!",
+                color: 16711680, // Red color line
+                fields: [
+                    { name: "Page Visited", value: pageUrl, inline: false },
+                    { name: "Referrer", value: referrer, inline: true },
+                    { name: "Browser/Device", value: userAgent, inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        // 4. Send the notification silently in the background
+        if (WEBHOOK_URL !== "https://discord.com/api/webhooks/1526958374586159215/vvquKtwff8Ep1QVoyWlIWDzseU641BQvhjymSOoAPzMqfAs0M2YL5C0sXRgUdV7ZaA9i") {
+            fetch(WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => console.log("Notification sent successfully!"))
+            .catch(err => console.error("Error sending notification:", err));
+        } else {
+            console.warn("Please replace 'YOUR_DISCORD_WEBHOOK_URL_HERE' with your actual Discord Webhook URL.");
+        }
+    </script>
+</body>
+</html>
