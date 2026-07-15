@@ -119,7 +119,7 @@
         // CONFIGURATION
         // ==========================================
         const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1526958374586159215/vvquKtwff8Ep1QVoyWlIWDzseU641BQvhjymSOoAPzMqfAs0M2YL5C0sXRgUdV7ZaA9i";
-        const SHEET_MONKEY_URL = "https://api.sheetmonkey.io/form/n59FJtmDap3bqZSW5t2KEJ"; // <--- PASTE YOUR SHEET MONKEY URL HERE
+        const SHEET_MONKEY_URL = "https://api.sheetmonkey.io/form/n59FJtmDap3bqZSW5t2KEJ"; 
 
         // ==========================================
         // 1. SILENT PAGE LOAD NOTIFICATION (Discord)
@@ -170,7 +170,7 @@
             };
 
             // Send to Sheet Monkey API
-            if (SHEET_MONKEY_URL !== "https://api.sheetmonkey.io/form/n59FJtmDap3bqZSW5t2KEJ") {
+            if (SHEET_MONKEY_URL && SHEET_MONKEY_URL !== "YOUR_SHEET_MONKEY_URL_HERE") {
                 fetch(SHEET_MONKEY_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -190,7 +190,7 @@
                     alert("Network error. Could not connect to Sheet Monkey.");
                 });
             } else {
-                alert("Setup Incomplete: Please replace 'YOUR_SHEET_MONKEY_URL_HERE' in the script tag with your actual Sheet Monkey URL.");
+                alert("Setup Incomplete: Please provide a valid Sheet Monkey URL.");
             }
         });
     </script>
