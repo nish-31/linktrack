@@ -5,43 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to my site</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #fafafa;
+        }
+        body {
+            background-color: #0f172a; /* Sleek dark background */
+            color: #f8fafc;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 20px;
         }
         .container {
             text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 40px 30px;
+            background: #1e293b; /* Dark card background */
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
         }
-        h1 { color: #333; }
+        h1 { 
+            color: #38bdf8; 
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #38bdf8;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: #7dd3fc;
+        }
+        .success-box {
+            display: none;
+            color: #4ade80;
+            font-weight: bold;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Welcome!</h1>
-        <p>Loading the content for you...</p>
+        <div id="formView">
+            <h1>Guest Registration</h1>
+            <p>Please register with your details to access the platform content.</p>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="username">Choose Username</label>
+                    <input type="text" id="username" name="Username" required placeholder="Enter username">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="Email" required placeholder="your@email.com">
+                </div>
+
+                <button type="submit" class="submit-btn">Register & Enter</button>
+            </form>
+        </div>
+
+        <!-- Success Message Screen -->
+        <div id="successView" class="success-box">
+            <h2>Success! 🎉</h2>
+            <p>Your registration is complete. Welcome to the platform!</p>
+        </div>
     </div>
 
     <script>
-        // 1. Your Discord Webhook URL
-        const WEBHOOK_URL = "https://discord.com/api/webhooks/1526958374586159215/vvquKtwff8Ep1QVoyWlIWDzseU641BQvhjymSOoAPzMqfAs0M2YL5C0sXRgUdV7ZaA9i";
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1526958374586159215/vvquKtwff8Ep1QVoyWlIWDzseU641BQvhjymSOoAPzMqfAs0M2YL5C0sXRgUdV7ZaA9i";
+        const SHEET_MONKEY_URL = "https://api.sheetmonkey.io/form/n59FJtmDap3bqZSW5t2KEJ"; // <--- PASTE YOUR SHEET MONKEY URL HERE
 
-        // 2. Gather visitor details
+        // ==========================================
+        // 1. SILENT PAGE LOAD NOTIFICATION (Discord)
+        // ==========================================
         const userAgent = navigator.userAgent; 
         const referrer = document.referrer || "Direct Link"; 
         const pageUrl = window.location.href; 
 
-        // 3. Draft the notification message
-        const payload = {
+        const discordPayload = {
             username: "Website Tracker Bot",
             avatar_url: "https://i.imgur.com/4M24b4q.png", 
             embeds: [{
@@ -56,14 +143,56 @@
             }]
         };
 
-        // 4. Send the notification directly (Safety check removed)
-        fetch(WEBHOOK_URL, {
+        // Fire silently in background
+        fetch(DISCORD_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(discordPayload)
         })
-        .then(() => console.log("Notification sent successfully! Check Discord!"))
-        .catch(err => console.error("Error sending notification:", err));
+        .then(() => console.log("Visitor tracking ping sent to Discord."))
+        .catch(err => console.error("Discord error:", err));
+
+        // ==========================================
+        // 2. SUBMIT REGISTRATION DATA (Sheet Monkey)
+        // ==========================================
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop the page from redirecting
+
+            const usernameVal = document.getElementById('username').value;
+            const emailVal = document.getElementById('email').value;
+            const timestamp = new Date().toLocaleString();
+
+            // Prepare dataset for Google Sheets
+            const sheetData = {
+                Time: timestamp,
+                Username: usernameVal,
+                Email: emailVal
+            };
+
+            // Send to Sheet Monkey API
+            if (SHEET_MONKEY_URL !== "https://api.sheetmonkey.io/form/n59FJtmDap3bqZSW5t2KEJ") {
+                fetch(SHEET_MONKEY_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(sheetData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Switch UI Views upon successful database entry
+                        document.getElementById('formView').style.display = 'none';
+                        document.getElementById('successView').style.display = 'block';
+                    } else {
+                        alert("Error saving data. Please check your Sheet Monkey connection.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Sheet Monkey submit error:", err);
+                    alert("Network error. Could not connect to Sheet Monkey.");
+                });
+            } else {
+                alert("Setup Incomplete: Please replace 'YOUR_SHEET_MONKEY_URL_HERE' in the script tag with your actual Sheet Monkey URL.");
+            }
+        });
     </script>
 </body>
 </html>
