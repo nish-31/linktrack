@@ -32,21 +32,21 @@
     </div>
 
     <script>
-        // 1. Paste your Discord Webhook URL here
+        // 1. Your Discord Webhook URL
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1526958374586159215/vvquKtwff8Ep1QVoyWlIWDzseU641BQvhjymSOoAPzMqfAs0M2YL5C0sXRgUdV7ZaA9i";
 
-        // 2. Gather some quick visitor details
-        const userAgent = navigator.userAgent; // Browser type
-        const referrer = document.referrer || "Direct Link"; // Where they came from
-        const pageUrl = window.location.href; // The exact URL they clicked
+        // 2. Gather visitor details
+        const userAgent = navigator.userAgent; 
+        const referrer = document.referrer || "Direct Link"; 
+        const pageUrl = window.location.href; 
 
         // 3. Draft the notification message
         const payload = {
             username: "Website Tracker Bot",
-            avatar_url: "https://i.imgur.com/4M24b4q.png", // Optional bot icon
+            avatar_url: "https://i.imgur.com/4M24b4q.png", 
             embeds: [{
                 title: "🚨 Link Clicked!",
-                color: 16711680, // Red color line
+                color: 16711680, 
                 fields: [
                     { name: "Page Visited", value: pageUrl, inline: false },
                     { name: "Referrer", value: referrer, inline: true },
@@ -56,18 +56,14 @@
             }]
         };
 
-        // 4. Send the notification silently in the background
-        if (WEBHOOK_URL !== "https://discord.com/api/webhooks/1526958374586159215/vvquKtwff8Ep1QVoyWlIWDzseU641BQvhjymSOoAPzMqfAs0M2YL5C0sXRgUdV7ZaA9i") {
-            fetch(WEBHOOK_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => console.log("Notification sent successfully!"))
-            .catch(err => console.error("Error sending notification:", err));
-        } else {
-            console.warn("Please replace 'YOUR_DISCORD_WEBHOOK_URL_HERE' with your actual Discord Webhook URL.");
-        }
+        // 4. Send the notification directly (Safety check removed)
+        fetch(WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(() => console.log("Notification sent successfully! Check Discord!"))
+        .catch(err => console.error("Error sending notification:", err));
     </script>
 </body>
 </html>
